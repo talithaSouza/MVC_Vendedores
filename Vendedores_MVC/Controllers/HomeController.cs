@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Vendedores_MVC.Models;
+using Vendedores_MVC.Models.ViewModels;
 
 namespace Vendedores_MVC.Controllers
 {
