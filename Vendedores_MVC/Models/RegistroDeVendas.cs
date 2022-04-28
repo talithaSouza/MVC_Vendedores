@@ -9,9 +9,19 @@ namespace Vendedores_MVC.Models
         public decimal Somatorio { get; set; }
         public VendaStatus Status { get; set; }
 
-        public int FK_Vendedor { get; set; }
         public Vendedor Vendedor { get; set; }
 
-         
+        public RegistroDeVendas()
+        {
+
+        }
+
+        public RegistroDeVendas(DateTime data, decimal somatorio, VendaStatus status, Vendedor vendedor)
+        {
+            Data = data;
+            Somatorio = somatorio;
+            Status = status;
+            Vendedor = vendedor;
+        }
     }
 }

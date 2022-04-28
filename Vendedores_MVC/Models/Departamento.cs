@@ -19,5 +19,15 @@ namespace Vendedores_MVC.Models
         {
             return ListVendedores.Sum(x => x.TotalVendas(inicial, final));
         }
+
+        public Departamento()
+        {
+
+        }
+
+        public Departamento(string nome)
+        {
+            Nome = nome;
+        }
     }
 }
