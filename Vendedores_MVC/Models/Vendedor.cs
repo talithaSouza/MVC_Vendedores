@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Vendedores_MVC.Models
 {
@@ -15,5 +16,21 @@ namespace Vendedores_MVC.Models
 
         public ICollection<RegistroDeVendas> Vendas { get; set; } = new List<RegistroDeVendas>();
 
+
+        public void Add(RegistroDeVendas venda)
+        {
+            Vendas.Add(venda);
+        }
+
+        public void Remove(RegistroDeVendas venda)
+        {
+            if (Vendas.Count() > 0)
+                Vendas.Remove(venda);
+        }
+
+        public decimal TotalVendas(DateTime inicial, DateTime final)
+        {
+            return Vendas.Where(x => x.Data >= inicial && x.Data <= final).Sum(x => x.Somatorio);
+        }
     }
 }

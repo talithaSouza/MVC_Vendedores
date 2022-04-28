@@ -7,6 +7,8 @@ namespace Vendedores_MVC.Data
     {
         public MyContext (DbContextOptions<MyContext> options): base(options){ }
 
-        public DbSet<Departamento> Departamento { get; set; }
+        public DbSet<Departamento> Departamentos { get; set; }
+        public DbSet<Vendedor> Vendedores { get; set; }
+        public DbSet<RegistroDeVendas> RegistroDeVendas { get; set; }
     }
 }

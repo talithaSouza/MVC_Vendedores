@@ -19,7 +19,7 @@ namespace Vendedores_MVC.Controllers
         // GET: Departamentos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Departamento.ToListAsync());
+            return View(await _context.Departamentos.ToListAsync());
         }
 
         // GET: Departamentos/Details/5
@@ -30,7 +30,7 @@ namespace Vendedores_MVC.Controllers
                 return NotFound();
             }
 
-            var departamento = await _context.Departamento
+            var departamento = await _context.Departamentos
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (departamento == null)
             {
@@ -70,7 +70,7 @@ namespace Vendedores_MVC.Controllers
                 return NotFound();
             }
 
-            var departamento = await _context.Departamento.FindAsync(id);
+            var departamento = await _context.Departamentos.FindAsync(id);
             if (departamento == null)
             {
                 return NotFound();
@@ -121,7 +121,7 @@ namespace Vendedores_MVC.Controllers
                 return NotFound();
             }
 
-            var departamento = await _context.Departamento
+            var departamento = await _context.Departamentos
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (departamento == null)
             {
@@ -136,15 +136,15 @@ namespace Vendedores_MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var departamento = await _context.Departamento.FindAsync(id);
-            _context.Departamento.Remove(departamento);
+            var departamento = await _context.Departamentos.FindAsync(id);
+            _context.Departamentos.Remove(departamento);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool DepartamentoExists(int id)
         {
-            return _context.Departamento.Any(e => e.Id == id);
+            return _context.Departamentos.Any(e => e.Id == id);
         }
     }
 }
