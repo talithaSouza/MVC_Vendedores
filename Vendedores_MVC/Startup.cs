@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Vendedores_MVC.Data;
+using Vendedores_MVC.Service;
 
 namespace Vendedores_MVC
 {
@@ -31,6 +32,7 @@ namespace Vendedores_MVC
                     options.UseSqlServer(Configuration.GetConnectionString("MyContext")));
 
             services.AddScoped<SeedingService>();
+            services.AddTransient<VendedorService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
