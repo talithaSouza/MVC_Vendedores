@@ -25,7 +25,8 @@ namespace Vendedores_MVC.Service
 
         public Vendedor RetornarPorId(int id)
         {
-            return _context.Vendedores.FirstOrDefault(x => x.Id == id);
+            return _context.Vendedores
+                            .Include(x => x.Departamento).FirstOrDefault(x => x.Id == id);
         }
         public Vendedor Cadastrar(Vendedor vendedor)
         {

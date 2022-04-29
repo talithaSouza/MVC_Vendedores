@@ -18,13 +18,7 @@
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
-                Data de aniversário
-            </th>
-            <th>
-                Salário Base R$
-            </th>
-            <th>
-                Departamento
+                Email
             </th>
             <th></th>
         </tr>
@@ -40,18 +34,9 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DataAniversario)
-            </td>
-            <td>
-                @item.SalarioBase.ToString("F2")
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Departamento.Nome)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Deseja realmente deletar esse vendedor?')" class="text-danger ml-1">Deletar</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Deseja realmente deletar o vendedor @item.Nome?')" class="text-danger ml-1">Deletar</a>
             </td>
         </tr>
         }

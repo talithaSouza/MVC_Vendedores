@@ -54,5 +54,17 @@ namespace Vendedores_MVC.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        public IActionResult Details(int? id)
+        {
+            if (id == null)
+                return BadRequest();
+
+            var obj = _service.RetornarPorId((int)id);
+            if (obj == null)
+                return NotFound();
+
+            return View(obj);
+        }
     }
 }
