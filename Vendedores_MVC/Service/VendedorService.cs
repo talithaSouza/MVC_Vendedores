@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Vendedores_MVC.Data;
 using Vendedores_MVC.Models;
+using Vendedores_MVC.Service.Exceptions;
 
 namespace Vendedores_MVC.Service
 {
@@ -42,7 +43,7 @@ namespace Vendedores_MVC.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -63,7 +64,23 @@ namespace Vendedores_MVC.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void Atualizar(Vendedor vendedor)
+        {
+            if (!_context.Vendedores.Any(x => x.Id == vendedor.Id))
+                throw new NotFoundException("Id não encontrado");
+
+            try
+            {
+                _context.Update(vendedor);
+                _context.SaveChanges();
+            }
+            catch (DbConcurrencyException ex)
+            {
+                throw new DbConcurrencyException(ex.Message);
             }
         }
     }
