@@ -43,5 +43,16 @@ namespace Vendedores_MVC.Controllers
 
             return View(vendedor);
         }
+
+        public IActionResult Delete(int? id)
+        {
+            if (id == null)
+                return BadRequest();
+
+            if (!_service.Deletar((int)id))
+                return NotFound();
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

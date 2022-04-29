@@ -23,6 +23,10 @@ namespace Vendedores_MVC.Service
                    .ToList();
         }
 
+        public Vendedor RetornarPorId(int id)
+        {
+            return _context.Vendedores.FirstOrDefault(x => x.Id == id);
+        }
         public Vendedor Cadastrar(Vendedor vendedor)
         {
             try
@@ -34,6 +38,27 @@ namespace Vendedores_MVC.Service
                 _context.SaveChanges();
 
                 return vendedor;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+        public bool Deletar(int id)
+        {
+            try
+            {
+                var delete = this.RetornarPorId(id);
+                if (delete == null)
+                    return false;
+
+                _context.Remove(delete);
+                _context.SaveChanges();
+
+                return true;
             }
             catch (Exception ex)
             {
