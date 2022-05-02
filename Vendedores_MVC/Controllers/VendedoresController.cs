@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using Vendedores_MVC.Models;
 using Vendedores_MVC.Models.ViewModels;
 using Vendedores_MVC.Service;
@@ -48,10 +49,10 @@ namespace Vendedores_MVC.Controllers
         public IActionResult Delete(int? id)
         {
             if (id == null)
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { mensagem = "Id não foi fornececido" }); ;
 
             if (!_service.Deletar((int)id))
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { mensagem = "Id não encontrado" });
 
             return RedirectToAction(nameof(Index));
         }
@@ -59,11 +60,11 @@ namespace Vendedores_MVC.Controllers
         public IActionResult Details(int? id)
         {
             if (id == null)
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { mensagem = "Id não fornecido" }); ;
 
             var obj = _service.RetornarPorId((int)id);
             if (obj == null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { mensagem = "Id não encontrado" });
 
             return View(obj);
         }
@@ -71,11 +72,11 @@ namespace Vendedores_MVC.Controllers
         public IActionResult Edit(int? id)
         {
             if (id == null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { mensagem = "Id não fornecido" });
 
             var vendedor = _service.RetornarPorId((int)id);
             if (vendedor == null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { mensagem = "Id não encontrado" });
 
             VendedorFormViewModel obj = new VendedorFormViewModel { Vendedor = vendedor, Departamentos = _departamentoService.RetornarTodos() };
 
@@ -87,7 +88,7 @@ namespace Vendedores_MVC.Controllers
         public IActionResult Edit(int id, Vendedor vendedor)
         {
             if (id != vendedor.Id)
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { mensagem = "Id não conrreponde com o objeto a editar" }); ;
 
             try
             {
@@ -95,15 +96,26 @@ namespace Vendedores_MVC.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            catch (NotFoundException)
+            catch (NotFoundException ex)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { mensagem = ex.Message });
             }
-            catch (DbConcurrencyException)
+            catch (DbConcurrencyException ex)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { mensagem = ex.Message });
             }
 
+        }
+
+        public IActionResult Error(string mensagem)
+        {
+            var viewModel = new ErrorViewModel()
+            {
+                Mensagem = mensagem,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+
+            return View(viewModel);
         }
     }
 }
