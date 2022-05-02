@@ -20,7 +20,7 @@
     </dl>
     <dl class="row">
         <dt class="col-sm-2">
-            Data de aniversário
+            @Html.DisplayNameFor(model => model.DataAniversario)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.DataAniversario)
@@ -28,7 +28,7 @@
     </dl>
     <dl class="row">
         <dt class="col-sm-2">
-            Salário Base R$
+            @Html.DisplayNameFor(model => model.SalarioBase)
         </dt>
         <dd class="col-sm-10">
             @Model.SalarioBase.ToString("F2")

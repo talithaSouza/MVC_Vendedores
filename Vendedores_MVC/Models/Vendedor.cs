@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Vendedores_MVC.Models
@@ -7,8 +8,16 @@ namespace Vendedores_MVC.Models
     public class Vendedor : BaseModel
     {
         public string Nome { get; set; }
+
+        [DataType(DataType.EmailAddress)]
+        [EmailAddress(ErrorMessage ="Formato Invalido")]
         public string Email { get; set; }
+
+        [Display(Name ="Data de Aniversário")]
+        [DataType(DataType.Date)]
         public DateTime DataAniversario { get; set; }
+
+        [Display(Name ="Salário Base R$:")]
         public int SalarioBase { get; set; }
         public int DepartamentoId { get; set; }
         public Departamento Departamento { get; set; }
