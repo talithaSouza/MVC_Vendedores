@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Vendedores_MVC.Data;
 using Vendedores_MVC.Models;
+using Vendedores_MVC.Models.ViewModels;
 using Vendedores_MVC.Service.Exceptions;
 
 namespace Vendedores_MVC.Service
@@ -48,22 +49,20 @@ namespace Vendedores_MVC.Service
             }
         }
 
-        public async Task<bool> DeletarAsync(int id)
+        public async Task DeletarAsync(int id)
         {
             try
             {
                 var delete = await this.RetornarPorIdAsync(id);
                 if (delete == null)
-                    return false;
+                    return;
 
                 _context.Remove(delete);
                 await _context.SaveChangesAsync();
-
-                return true;
             }
-            catch (Exception ex)
+            catch (DbUpdateException ex)
             {
-                throw new Exception(ex.Message);
+                throw new IntegrityException(ex.Message);
             }
         }
 

@@ -53,10 +53,15 @@ namespace Vendedores_MVC.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não foi fornececido" }); ;
 
-            if (!await _service.DeletarAsync((int)id))
-                return RedirectToAction(nameof(Error), new { mensagem = "Id não encontrado" });
-
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _service.DeletarAsync((int)id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (IntegrityException ex)
+            {
+                return RedirectToAction(nameof(Error), new { mensagem = ex.Message }); ;
+            }
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -106,7 +111,7 @@ namespace Vendedores_MVC.Controllers
                 catch (DbConcurrencyException ex)
                 {
                     return RedirectToAction(nameof(Error), new { mensagem = ex.Message });
-                } 
+                }
             }
 
             VendedorFormViewModel obj = new VendedorFormViewModel { Vendedor = vendedor, Departamentos = await _departamentoService.RetornarTodosAsync() };
