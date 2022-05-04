@@ -43,7 +43,8 @@ namespace Vendedores_MVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(vendedor);
+            VendedorFormViewModel viewModel = new VendedorFormViewModel() { Departamentos = _departamentoService.RetornarTodos(), Vendedor = vendedor };
+            return View(viewModel);
         }
 
         public IActionResult Delete(int? id)
@@ -79,7 +80,6 @@ namespace Vendedores_MVC.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não encontrado" });
 
             VendedorFormViewModel obj = new VendedorFormViewModel { Vendedor = vendedor, Departamentos = _departamentoService.RetornarTodos() };
-
             return View(obj);
         }
 
@@ -90,20 +90,26 @@ namespace Vendedores_MVC.Controllers
             if (id != vendedor.Id)
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não conrreponde com o objeto a editar" }); ;
 
-            try
+            if (ModelState.IsValid)
             {
-                _service.Atualizar(vendedor);
+                try
+                {
+                    _service.Atualizar(vendedor);
 
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (NotFoundException ex)
+                {
+                    return RedirectToAction(nameof(Error), new { mensagem = ex.Message });
+                }
+                catch (DbConcurrencyException ex)
+                {
+                    return RedirectToAction(nameof(Error), new { mensagem = ex.Message });
+                } 
             }
-            catch (NotFoundException ex)
-            {
-                return RedirectToAction(nameof(Error), new { mensagem = ex.Message });
-            }
-            catch (DbConcurrencyException ex)
-            {
-                return RedirectToAction(nameof(Error), new { mensagem = ex.Message });
-            }
+
+            VendedorFormViewModel obj = new VendedorFormViewModel { Vendedor = vendedor, Departamentos = _departamentoService.RetornarTodos() };
+            return View(obj);
 
         }
 
