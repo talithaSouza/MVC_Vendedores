@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,9 +15,9 @@ namespace Vendedores_MVC.Service
             _context = context;
         }
 
-        public List<Departamento> RetornarTodos()
+        public async Task<List<Departamento>> RetornarTodosAsync()
         {
-            return _context.Departamentos.OrderBy(x => x.Nome).ToList();
+            return await _context.Departamentos.OrderBy(x => x.Nome).ToListAsync();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Vendedores_MVC.Data;
 using Vendedores_MVC.Models;
 using Vendedores_MVC.Service.Exceptions;
@@ -17,19 +18,19 @@ namespace Vendedores_MVC.Service
             _context = context;
         }
 
-        public List<Vendedor> RetornarTodos()
+        public async Task<List<Vendedor>> RetornarTodosAsync()
         {
-            return _context.Vendedores
+            return await _context.Vendedores
                    .Include(x => x.Departamento)
-                   .ToList();
+                   .ToListAsync();
         }
 
-        public Vendedor RetornarPorId(int id)
+        public async Task<Vendedor> RetornarPorIdAsync(int id)
         {
-            return _context.Vendedores
-                            .Include(x => x.Departamento).FirstOrDefault(x => x.Id == id);
+            return await _context.Vendedores
+                            .Include(x => x.Departamento).FirstOrDefaultAsync(x => x.Id == id);
         }
-        public Vendedor Cadastrar(Vendedor vendedor)
+        public async Task<Vendedor> CadastrarAsync(Vendedor vendedor)
         {
             try
             {
@@ -37,7 +38,7 @@ namespace Vendedores_MVC.Service
                     return null;
 
                 _context.Add(vendedor);
-                _context.SaveChanges();
+               await _context.SaveChangesAsync();
 
                 return vendedor;
             }
@@ -47,18 +48,16 @@ namespace Vendedores_MVC.Service
             }
         }
 
-
-
-        public bool Deletar(int id)
+        public async Task<bool> DeletarAsync(int id)
         {
             try
             {
-                var delete = this.RetornarPorId(id);
+                var delete = await this.RetornarPorIdAsync(id);
                 if (delete == null)
                     return false;
 
                 _context.Remove(delete);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return true;
             }
@@ -68,15 +67,16 @@ namespace Vendedores_MVC.Service
             }
         }
 
-        public void Atualizar(Vendedor vendedor)
+        public async Task AtualizarAsync(Vendedor vendedor)
         {
-            if (!_context.Vendedores.Any(x => x.Id == vendedor.Id))
+            bool existe = await _context.Vendedores.AnyAsync(x => x.Id == vendedor.Id);
+            if (!existe)
                 throw new NotFoundException("Id não encontrado");
 
             try
             {
                 _context.Update(vendedor);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (DbConcurrencyException ex)
             {

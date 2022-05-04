@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Vendedores_MVC.Models;
 using Vendedores_MVC.Models.ViewModels;
 using Vendedores_MVC.Service;
@@ -18,74 +19,74 @@ namespace Vendedores_MVC.Controllers
             _service = service;
             _departamentoService = departamentoService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
 
-            return View(_service.RetornarTodos());
+            return View(await _service.RetornarTodosAsync());
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             VendedorFormViewModel viewModel = new VendedorFormViewModel()
             {
-                Departamentos = _departamentoService.RetornarTodos()
+                Departamentos = await _departamentoService.RetornarTodosAsync()
             };
             return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Post(Vendedor vendedor)
+        public async Task<IActionResult> Post(Vendedor vendedor)
         {
             if (ModelState.IsValid)
             {
-                _service.Cadastrar(vendedor);
+                await _service.CadastrarAsync(vendedor);
                 return RedirectToAction(nameof(Index));
             }
 
-            VendedorFormViewModel viewModel = new VendedorFormViewModel() { Departamentos = _departamentoService.RetornarTodos(), Vendedor = vendedor };
+            VendedorFormViewModel viewModel = new VendedorFormViewModel() { Departamentos = await _departamentoService.RetornarTodosAsync(), Vendedor = vendedor };
             return View(viewModel);
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não foi fornececido" }); ;
 
-            if (!_service.Deletar((int)id))
+            if (!await _service.DeletarAsync((int)id))
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não encontrado" });
 
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não fornecido" }); ;
 
-            var obj = _service.RetornarPorId((int)id);
+            var obj = await _service.RetornarPorIdAsync((int)id);
             if (obj == null)
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não encontrado" });
 
             return View(obj);
         }
 
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não fornecido" });
 
-            var vendedor = _service.RetornarPorId((int)id);
+            var vendedor = await _service.RetornarPorIdAsync((int)id);
             if (vendedor == null)
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não encontrado" });
 
-            VendedorFormViewModel obj = new VendedorFormViewModel { Vendedor = vendedor, Departamentos = _departamentoService.RetornarTodos() };
+            VendedorFormViewModel obj = new VendedorFormViewModel { Vendedor = vendedor, Departamentos = await _departamentoService.RetornarTodosAsync() };
             return View(obj);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Vendedor vendedor)
+        public async Task<IActionResult> Edit(int id, Vendedor vendedor)
         {
             if (id != vendedor.Id)
                 return RedirectToAction(nameof(Error), new { mensagem = "Id não conrreponde com o objeto a editar" }); ;
@@ -94,7 +95,7 @@ namespace Vendedores_MVC.Controllers
             {
                 try
                 {
-                    _service.Atualizar(vendedor);
+                    await _service.AtualizarAsync(vendedor);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -108,7 +109,7 @@ namespace Vendedores_MVC.Controllers
                 } 
             }
 
-            VendedorFormViewModel obj = new VendedorFormViewModel { Vendedor = vendedor, Departamentos = _departamentoService.RetornarTodos() };
+            VendedorFormViewModel obj = new VendedorFormViewModel { Vendedor = vendedor, Departamentos = await _departamentoService.RetornarTodosAsync() };
             return View(obj);
 
         }
