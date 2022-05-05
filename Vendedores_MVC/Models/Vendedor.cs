@@ -28,7 +28,7 @@ namespace Vendedores_MVC.Models
         public int DepartamentoId { get; set; }
         public Departamento Departamento { get; set; }
 
-        public ICollection<RegistroDeVendas> Vendas { get; set; } = new List<RegistroDeVendas>();
+        public ICollection<RegistroDeVenda> Vendas { get; set; } = new List<RegistroDeVenda>();
 
         public Vendedor()
         {
@@ -44,12 +44,12 @@ namespace Vendedores_MVC.Models
             Departamento = departamento;
         }
 
-        public void Add(RegistroDeVendas venda)
+        public void Add(RegistroDeVenda venda)
         {
             Vendas.Add(venda);
         }
 
-        public void Remove(RegistroDeVendas venda)
+        public void Remove(RegistroDeVenda venda)
         {
             if (Vendas.Count() > 0)
                 Vendas.Remove(venda);

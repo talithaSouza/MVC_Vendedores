@@ -9,6 +9,6 @@ namespace Vendedores_MVC.Data
 
         public DbSet<Departamento> Departamentos { get; set; }
         public DbSet<Vendedor> Vendedores { get; set; }
-        public DbSet<RegistroDeVendas> RegistroDeVendas { get; set; }
+        public DbSet<RegistroDeVenda> RegistroDeVendas { get; set; }
     }
 }
