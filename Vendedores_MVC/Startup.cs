@@ -36,6 +36,7 @@ namespace Vendedores_MVC
             services.AddScoped<SeedingService>();
             services.AddTransient<VendedorService>();
             services.AddTransient<DepartamentoService>();
+            services.AddTransient<RegistroDeVendaService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
