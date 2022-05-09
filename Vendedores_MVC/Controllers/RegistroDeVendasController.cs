@@ -36,9 +36,19 @@ namespace Vendedores_MVC.Controllers
             return View(list);
         }
 
-        public IActionResult BuscaAgrupada()
+        public async Task<IActionResult> BuscaAgrupada(DateTime? dataInicial, DateTime? dataFinal)
         {
-            return View();
+            if (!dataInicial.HasValue)
+                dataInicial = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 01);
+
+            if (!dataFinal.HasValue)
+                dataInicial = DateTime.Now;
+
+            ViewData["dataInicial"] = dataInicial.Value.ToString("yyyy-MM-dd");
+            ViewData["dataFinal"] = dataFinal.Value.ToString("yyyy-MM-dd");
+            var list = await _service.BuscarPorDataAgrupadaAsync(dataInicial, dataFinal);
+
+            return View(list);
         }
     }
 }

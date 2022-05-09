@@ -1,8 +1,76 @@
-﻿
+﻿@model IEnumerable<IGrouping<Departamento, RegistroDeVenda>>
+
 @{
     ViewData["Title"] = "Busca Agrupada";
+    DateTime dataInicial = DateTime.Parse(ViewData["dataInicial"] as string);
+    DateTime dataFinal = DateTime.Parse(ViewData["dataFinal"] as string);
 }
 
-<h1>@ViewData["Title"]</h1>
-<hr />
+<h2>@ViewData["Title"]</h2>
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+                <div class="form-group">
+                    <label for="dataInicial">Data Inicial</label>
+                    <input type="date" class="form-control" name="dataInicial" value=@ViewData["dataInicial"]>
+                </div>
+                <div class="form-group">
+                    <label for="dataFinal">Data Final</label>
+                    <input type="date" class="form-control" name="dataFinal" value=@ViewData["dataFinal"]>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+    </div>
+</nav>
+
+@foreach (var departmentGroup in Model)
+{
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Departamento @departmentGroup.Key.Nome, Total sales = @departmentGroup.Key.TotalVendas(dataInicial, dataFinal).ToString("F2")</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr class="success">
+                        <th>
+                            Data
+                        </th>
+                        <th>
+                            Total
+                        </th>
+                        <th>
+                            Vendedor
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in departmentGroup)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Data)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Somatorio)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Vendedor.Nome)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
 

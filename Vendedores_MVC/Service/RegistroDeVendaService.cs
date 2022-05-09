@@ -31,5 +31,32 @@ namespace Vendedores_MVC.Service
                    .ThenInclude(x => x.Departamento)
                    .OrderBy(x => x.Data).ToListAsync();
         }
+
+        public async Task<List<IGrouping<Departamento, RegistroDeVenda>>> BuscarPorDataAgrupadaAsync(DateTime? dataInicial, DateTime? dataFinal)
+        {
+            try
+            {
+                var result = from obj in _context.RegistroDeVendas select obj;
+
+                if (dataInicial.HasValue)
+                    result = result.Where(x => x.Data >= dataInicial);
+
+                if (dataFinal.HasValue)
+                    result = result.Where(x => x.Data <= dataFinal);
+
+                var list =  await result
+                       .Include(x => x.Vendedor)
+                       .ThenInclude(x => x.Departamento)
+                       .OrderBy(x => x.Data)
+                       .ToListAsync();
+
+                return list.GroupBy(x => x.Vendedor.Departamento).ToList();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
     }
 }
