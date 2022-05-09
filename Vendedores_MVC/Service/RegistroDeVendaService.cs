@@ -58,5 +58,16 @@ namespace Vendedores_MVC.Service
                 throw;
             }
         }
+
+        public async Task<RegistroDeVenda> CadastrarNovaVendaAsync(RegistroDeVenda venda)
+        {
+            if (venda == null)
+                return null;
+
+            _context.RegistroDeVendas.Add(venda);
+            await _context.SaveChangesAsync();
+
+            return venda;
+        }
     }
 }

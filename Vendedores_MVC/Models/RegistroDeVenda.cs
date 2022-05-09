@@ -12,6 +12,7 @@ namespace Vendedores_MVC.Models
         public decimal Somatorio { get; set; }
         public VendaStatus Status { get; set; }
 
+        public int VendedorId { get; set; }
         public Vendedor Vendedor { get; set; }
 
         public RegistroDeVenda()

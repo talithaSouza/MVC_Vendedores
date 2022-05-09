@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Vendedores_MVC.Models;
+using Vendedores_MVC.Models.ViewModels;
 using Vendedores_MVC.Service;
 
 namespace Vendedores_MVC.Controllers
@@ -10,10 +13,12 @@ namespace Vendedores_MVC.Controllers
     public class RegistroDeVendasController : Controller
     {
         private readonly RegistroDeVendaService _service;
+        private readonly VendedorService _vendedorService;
 
-        public RegistroDeVendasController(RegistroDeVendaService service)
+        public RegistroDeVendasController(RegistroDeVendaService service, VendedorService vendedorService)
         {
             _service = service;
+            _vendedorService = vendedorService;
         }
 
         public IActionResult Index()
@@ -24,13 +29,17 @@ namespace Vendedores_MVC.Controllers
         public async Task<IActionResult> BuscaSimples(DateTime? dataInicial, DateTime? dataFinal)
         {
             if (!dataInicial.HasValue)
+            {
+                ViewData["dataInicial"] = dataInicial.Value.ToString("yyyy-MM-dd");
                 dataInicial = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 01);
+            }
 
             if (!dataFinal.HasValue)
+            {
+                ViewData["dataFinal"] = dataFinal.Value.ToString("yyyy-MM-dd");
                 dataInicial = DateTime.Now;
+            }
 
-            ViewData["dataInicial"] = dataInicial.Value.ToString("yyyy-MM-dd");
-            ViewData["dataFinal"] = dataFinal.Value.ToString("yyyy-MM-dd");
             var list = await _service.BuscarPorDataAsync(dataInicial, dataFinal);
 
             return View(list);
@@ -49,6 +58,37 @@ namespace Vendedores_MVC.Controllers
             var list = await _service.BuscarPorDataAgrupadaAsync(dataInicial, dataFinal);
 
             return View(list);
+        }
+
+        public async Task<IActionResult> Create()
+        {
+            var ViewModel = new RegistroDeVendasFormViewModel()
+            {
+                Vendedores = await _vendedorService.RetornarTodosAsync(),
+            };
+            return View(ViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(RegistroDeVenda RegistroDeVenda)
+        {
+            if(!ModelState.IsValid)
+                return RedirectToAction(nameof(Error), new { mensagem = "Model Inválido" });
+
+            await _service.CadastrarNovaVendaAsync(RegistroDeVenda);
+            return RedirectToAction(nameof(BuscaSimples), new {dataInicial = RegistroDeVenda.Data, dataFinal = RegistroDeVenda.Data });
+        }
+
+        public IActionResult Error(string mensagem)
+        {
+            var viewModel = new ErrorViewModel()
+            {
+                Mensagem = mensagem,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+
+            return View(viewModel);
         }
     }
 }
