@@ -1,4 +1,4 @@
-﻿namespace Vendedores_MVC.Models.Enum
+﻿namespace Vendedores_MVC.Models.Enums
 {
     public enum VendaStatus
     {

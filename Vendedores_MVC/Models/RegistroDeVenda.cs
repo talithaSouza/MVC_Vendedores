@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Vendedores_MVC.Models.Enum;
+using Vendedores_MVC.Models.Enums;
 
 namespace Vendedores_MVC.Models
 {

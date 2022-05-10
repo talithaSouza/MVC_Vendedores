@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Vendedores_MVC.Models;
+using Vendedores_MVC.Models.Enums;
 using Vendedores_MVC.Models.ViewModels;
 using Vendedores_MVC.Service;
 
@@ -65,6 +66,7 @@ namespace Vendedores_MVC.Controllers
             var ViewModel = new RegistroDeVendasFormViewModel()
             {
                 Vendedores = await _vendedorService.RetornarTodosAsync(),
+                ListStatus = Enum.GetValues(typeof(VendaStatus)).Cast<VendaStatus>().ToList()
             };
             return View(ViewModel);
         }
@@ -73,11 +75,11 @@ namespace Vendedores_MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RegistroDeVenda RegistroDeVenda)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return RedirectToAction(nameof(Error), new { mensagem = "Model Inválido" });
 
             await _service.CadastrarNovaVendaAsync(RegistroDeVenda);
-            return RedirectToAction(nameof(BuscaSimples), new {dataInicial = RegistroDeVenda.Data, dataFinal = RegistroDeVenda.Data });
+            return RedirectToAction(nameof(BuscaSimples), new { dataInicial = RegistroDeVenda.Data, dataFinal = RegistroDeVenda.Data });
         }
 
         public IActionResult Error(string mensagem)

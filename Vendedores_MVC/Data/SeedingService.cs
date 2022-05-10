@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Vendedores_MVC.Models;
-using Vendedores_MVC.Models.Enum;
+using Vendedores_MVC.Models.Enums;
 
 namespace Vendedores_MVC.Data
 {
