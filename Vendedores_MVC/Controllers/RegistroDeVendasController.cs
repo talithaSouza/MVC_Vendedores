@@ -92,9 +92,6 @@ namespace Vendedores_MVC.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                    return RedirectToAction(nameof(Error), new { mensagem = "Model Inválido" });
-
                 if (!id.HasValue)
                 {
                     await _service.CadastrarNovaVendaAsync(RegistroDeVenda);
