@@ -29,7 +29,7 @@ namespace Vendedores_MVC.Service
             return await result
                    .Include(x => x.Vendedor)
                    .ThenInclude(x => x.Departamento)
-                   .OrderBy(x => x.Data).ToListAsync();
+                   .OrderByDescending(x => x.Data).ToListAsync();
         }
 
         public async Task<List<IGrouping<Departamento, RegistroDeVenda>>> BuscarPorDataAgrupadaAsync(DateTime? dataInicial, DateTime? dataFinal)

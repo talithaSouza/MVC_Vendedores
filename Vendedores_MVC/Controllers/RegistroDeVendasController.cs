@@ -29,16 +29,15 @@ namespace Vendedores_MVC.Controllers
 
         public async Task<IActionResult> BuscaSimples(DateTime? dataInicial, DateTime? dataFinal)
         {
-            if (!dataInicial.HasValue)
+            if (dataInicial.HasValue)
             {
                 ViewData["dataInicial"] = dataInicial.Value.ToString("yyyy-MM-dd");
                 dataInicial = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 01);
             }
 
-            if (!dataFinal.HasValue)
+            if (dataFinal.HasValue)
             {
                 ViewData["dataFinal"] = dataFinal.Value.ToString("yyyy-MM-dd");
-                dataInicial = DateTime.Now;
             }
 
             var list = await _service.BuscarPorDataAsync(dataInicial, dataFinal);
@@ -79,7 +78,8 @@ namespace Vendedores_MVC.Controllers
                 return RedirectToAction(nameof(Error), new { mensagem = "Model Inválido" });
 
             await _service.CadastrarNovaVendaAsync(RegistroDeVenda);
-            return RedirectToAction(nameof(BuscaSimples), new { dataInicial = RegistroDeVenda.Data, dataFinal = RegistroDeVenda.Data });
+            TempData["AlertaSucesso"] = "Venda Cadastrada Com Sucesso :)";
+            return RedirectToAction(nameof(Create));
         }
 
         public IActionResult Error(string mensagem)
