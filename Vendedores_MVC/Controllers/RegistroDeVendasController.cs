@@ -8,6 +8,7 @@ using Vendedores_MVC.Models;
 using Vendedores_MVC.Models.Enums;
 using Vendedores_MVC.Models.ViewModels;
 using Vendedores_MVC.Service;
+using Vendedores_MVC.Service.Exceptions;
 
 namespace Vendedores_MVC.Controllers
 {
@@ -60,26 +61,73 @@ namespace Vendedores_MVC.Controllers
             return View(list);
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> CreateOrEdit(int? id)
         {
-            var ViewModel = new RegistroDeVendasFormViewModel()
+            RegistroDeVendasFormViewModel ViewModel;
+            if (id.HasValue)
             {
-                Vendedores = await _vendedorService.RetornarTodosAsync(),
-                ListStatus = Enum.GetValues(typeof(VendaStatus)).Cast<VendaStatus>().ToList()
-            };
+                ViewModel = new RegistroDeVendasFormViewModel()
+                {
+                    RegistroDeVenda = await _service.RetornarVendaPorI((int)id),
+                    Vendedores = await _vendedorService.RetornarTodosAsync(),
+                    ListStatus = Enum.GetValues(typeof(VendaStatus)).Cast<VendaStatus>().ToList()
+                };
+                ViewData["Title"] = "Editar Venda";
+            }
+            else
+            {
+                ViewModel = new RegistroDeVendasFormViewModel()
+                {
+                    Vendedores = await _vendedorService.RetornarTodosAsync(),
+                    ListStatus = Enum.GetValues(typeof(VendaStatus)).Cast<VendaStatus>().ToList()
+                };
+                ViewData["Title"] = "Novas Vendas";
+            }
             return View(ViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RegistroDeVenda RegistroDeVenda)
+        public async Task<IActionResult> CreateOrEdit(int? id,RegistroDeVenda RegistroDeVenda)
         {
-            if (!ModelState.IsValid)
-                return RedirectToAction(nameof(Error), new { mensagem = "Model Inválido" });
+            try
+            {
+                if (!ModelState.IsValid)
+                    return RedirectToAction(nameof(Error), new { mensagem = "Model Inválido" });
 
-            await _service.CadastrarNovaVendaAsync(RegistroDeVenda);
-            TempData["AlertaSucesso"] = "Venda Cadastrada Com Sucesso :)";
-            return RedirectToAction(nameof(Create));
+                if (!id.HasValue)
+                {
+                    await _service.CadastrarNovaVendaAsync(RegistroDeVenda);
+                    TempData["AlertaSucesso"] = "Venda Cadastrada Com Sucesso :)"; 
+                }
+                else
+                {
+                    if (id != RegistroDeVenda.Id)
+                        return RedirectToAction(nameof(Error), new { mensagem = "Id não conrreponde com o objeto a editar" });
+                    if (ModelState.IsValid)
+                    {
+                        try
+                        {
+                            await _service.EditarVenda(RegistroDeVenda);
+
+                            return RedirectToAction(nameof(BuscaSimples));
+                        }
+                        catch (NotFoundException ex)
+                        {
+                            return RedirectToAction(nameof(Error), new { mensagem = ex.Message });
+                        }
+                        catch (DbConcurrencyException ex)
+                        {
+                            return RedirectToAction(nameof(Error), new { mensagem = ex.Message });
+                        }
+                    }
+                }
+                return RedirectToAction(nameof(CreateOrEdit));
+            }
+            catch (IntegrityException ex)
+            {
+                return RedirectToAction(nameof(Error), new { mensagem = ex.Message }); ;
+            }
         }
 
         public IActionResult Error(string mensagem)

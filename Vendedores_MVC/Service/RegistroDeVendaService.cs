@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Vendedores_MVC.Data;
 using Vendedores_MVC.Models;
+using Vendedores_MVC.Service.Exceptions;
 
 namespace Vendedores_MVC.Service
 {
@@ -68,6 +69,28 @@ namespace Vendedores_MVC.Service
             await _context.SaveChangesAsync();
 
             return venda;
+        }
+
+        public async Task<RegistroDeVenda> RetornarVendaPorI(int id)
+        {
+            return await _context.RegistroDeVendas.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task EditarVenda(RegistroDeVenda registroDeVenda)
+        {
+            bool existe = await _context.RegistroDeVendas.AnyAsync(x => x.Id == registroDeVenda.Id);
+            if (!existe)
+                throw new NotFoundException("Id não encontrado");
+
+            try
+            {
+                _context.Update(registroDeVenda);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbConcurrencyException ex)
+            {
+                throw new DbConcurrencyException(ex.Message);
+            }
         }
     }
 }

@@ -94,7 +94,7 @@ namespace Vendedores_MVC.Controllers
         public async Task<IActionResult> Edit(int id, Vendedor vendedor)
         {
             if (id != vendedor.Id)
-                return RedirectToAction(nameof(Error), new { mensagem = "Id não conrreponde com o objeto a editar" }); ;
+                return RedirectToAction(nameof(Error), new { mensagem = "Id não conrreponde com o objeto a editar" });
 
             if (ModelState.IsValid)
             {
