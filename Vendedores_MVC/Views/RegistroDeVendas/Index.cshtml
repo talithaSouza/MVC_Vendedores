@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Vendedores_MVC.Models.ViewModels.IndexRegistroVendaViewModel
+@{
     ViewData["Title"] = "Registro de Venda";
 }
 
@@ -6,6 +7,8 @@
 <p>
     <a asp-action="CreateOrEdit" class="btn btn-dark">Novas Vendas</a>
 </p>
+<h2>Busca Por Data</h2>
+<hr />
 <div class="row">
     <div class="col-md-6">
         <form class="form-horizontal" asp-action="BuscaSimples">
@@ -25,7 +28,7 @@
                 </div>
                 <div class="form-group" style="padding-top:5px">
                     <div class="col-lg-10 col-lg-offset-2">
-                        <button type="submit" class="btn btn-primary" >Buscar</button>
+                        <button type="submit" class="btn btn-primary">Buscar</button>
                     </div>
                 </div>
             </fieldset>
@@ -47,6 +50,26 @@
                     <div class="col-lg-10">
                         <input type="date" name="dataFinal" class="form-control" />
                     </div>
+                </div>
+                <div class="form-group" style="padding-top:5px">
+                    <div class="col-lg-10 col-lg-offset-2">
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form class="form-horizontal" asp-action="BuscaPorVendedor">
+            <fieldset>
+                <legend>Busca Por Vendedor</legend>
+                <div class="form-group">
+                    <label asp-for="IdVendedor" class="control-label">Vendedor:</label>
+                    <select name="IdVendedor" asp-items="@(new SelectList(Model.Vendedores, "Id", "Nome"))" class="form-control"></select>
                 </div>
                 <div class="form-group" style="padding-top:5px">
                     <div class="col-lg-10 col-lg-offset-2">

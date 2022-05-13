@@ -9,6 +9,7 @@ namespace Vendedores_MVC.Models.ViewModels
     {
         public List<Vendedor> Vendedores { get; set; }
         public RegistroDeVenda RegistroDeVenda { get; set; }
+        public string Somatorio { get; set; }
         public IEnumerable<VendaStatus> ListStatus { get; set; }
     }
 }

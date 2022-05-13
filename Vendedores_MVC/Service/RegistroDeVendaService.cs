@@ -71,9 +71,14 @@ namespace Vendedores_MVC.Service
             return venda;
         }
 
-        public async Task<RegistroDeVenda> RetornarVendaPorI(int id)
+        public async Task<RegistroDeVenda> RetornarVendaPorId(int id) 
+            => await _context.RegistroDeVendas.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+
+        public async Task<List<RegistroDeVenda>> RetornarVendaPorVendedor(int VendedorId)
         {
-            return await _context.RegistroDeVendas.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.RegistroDeVendas
+                          .Include(x => x.Vendedor)
+                          .Where(x => x.VendedorId == VendedorId).ToListAsync();
         }
 
         public async Task EditarVenda(RegistroDeVenda registroDeVenda)

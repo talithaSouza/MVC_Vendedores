@@ -23,9 +23,14 @@ namespace Vendedores_MVC.Controllers
             _vendedorService = vendedorService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var vendedoresViewModel = new IndexRegistroVendaViewModel()
+            {
+                Vendedores = await _vendedorService.RetornarTodosAsync()
+            };
+
+            return View(vendedoresViewModel);
         }
 
         public async Task<IActionResult> BuscaSimples(DateTime? dataInicial, DateTime? dataFinal)
@@ -61,6 +66,13 @@ namespace Vendedores_MVC.Controllers
             return View(list);
         }
 
+        public async Task<IActionResult> BuscaPorVendedor(int IdVendedor)
+        {
+            var list = await _service.RetornarVendaPorVendedor(IdVendedor);
+
+            return View(list);
+        }
+
         public async Task<IActionResult> CreateOrEdit(int? id)
         {
             RegistroDeVendasFormViewModel ViewModel;
@@ -68,7 +80,7 @@ namespace Vendedores_MVC.Controllers
             {
                 ViewModel = new RegistroDeVendasFormViewModel()
                 {
-                    RegistroDeVenda = await _service.RetornarVendaPorI((int)id),
+                    RegistroDeVenda = await _service.RetornarVendaPorId((int)id),
                     Vendedores = await _vendedorService.RetornarTodosAsync(),
                     ListStatus = Enum.GetValues(typeof(VendaStatus)).Cast<VendaStatus>().ToList()
                 };
@@ -88,19 +100,23 @@ namespace Vendedores_MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateOrEdit(int? id,RegistroDeVenda RegistroDeVenda)
+        public async Task<IActionResult> CreateOrEdit(int? id, RegistroDeVenda RegistroDeVenda, string somatorio)
         {
             try
             {
+                somatorio =somatorio.Replace(".","");
+                //Decimal.TryParse(somatorio, out decimal valor);
+                RegistroDeVenda.Somatorio = Convert.ToDecimal(somatorio);
+                
                 if (!id.HasValue)
                 {
                     await _service.CadastrarNovaVendaAsync(RegistroDeVenda);
-                    TempData["AlertaSucesso"] = "Venda Cadastrada Com Sucesso :)"; 
+                    TempData["AlertaSucesso"] = "Venda Cadastrada Com Sucesso :)";
                 }
                 else
                 {
                     if (id != RegistroDeVenda.Id)
-                        return RedirectToAction(nameof(Error), new { mensagem = "Id não conrreponde com o objeto a editar" });
+                        return RedirectToAction(nameof(Error), new { mensagem = "Id não corresponde com o objeto a editar" });
                     if (ModelState.IsValid)
                     {
                         try

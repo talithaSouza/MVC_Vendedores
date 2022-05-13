@@ -1,0 +1,64 @@
+﻿@model IEnumerable<RegistroDeVenda>
+
+@{
+    ViewData["Title"] = "Busca Por Vendedor";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Vendedor: @Model.First().Vendedor.Nome ;Total de Vendas = @Model.Sum(obj => obj.Somatorio).ToString("F2")</h3>
+        <h2>DALE TALITINHA</h2>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr class="success">
+                    <th>
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Data)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Vendedor.Departamento)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Somatorio)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </th>
+                    <th>#</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Data)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Vendedor.Departamento.Nome)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Somatorio)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        <td>
+                            <a asp-action="CreateOrEdit" asp-route-id="@item.Id">Editar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
