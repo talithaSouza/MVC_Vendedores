@@ -60,7 +60,7 @@ namespace Vendedores_MVC.Controllers
             }
             catch (IntegrityException ex)
             {
-                return RedirectToAction(nameof(Error), new { mensagem = ex.Message }); ;
+                return RedirectToAction(nameof(Error), new { mensagem = "Não é possivel Deletar esse vendedor, pois a vendas cadastradas a ele" }); ;
             }
         }
 
